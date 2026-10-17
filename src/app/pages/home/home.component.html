@@ -1,0 +1,248 @@
+<app-hero />
+
+<!-- 02 · categories -->
+<section class="section cats">
+  <div class="container section-head" appReveal>
+    <div>
+      <p class="eyebrow">Shop by category</p>
+      <h2>Seven ways to bring<br />natural craft home</h2>
+    </div>
+    <div class="cats__ctrl">
+      <a routerLink="/products" class="link-arrow">All products <app-icon name="arrow-right" [s]="14" /></a>
+      <button type="button" class="icon-btn" (click)="scrollTrack(-1)" [disabled]="atStart()" aria-label="Previous categories"><app-icon name="chevron-left" [s]="18" /></button>
+      <button type="button" class="icon-btn icon-btn--solid" (click)="scrollTrack(1)" [disabled]="atEnd()" aria-label="Next categories"><app-icon name="chevron-right" [s]="18" /></button>
+    </div>
+  </div>
+
+  <div class="cats__track" #track (scroll)="onTrackScroll()" tabindex="-1">
+    @for (c of categories; track c.slug; let i = $index) {
+      <a class="cat" [routerLink]="['/categories', c.slug]" [appReveal]="i * 70">
+        <div class="cat__media"><app-art [art]="c.art" [alt]="c.name" aspect="4 / 5" /></div>
+        <div class="cat__row">
+          <h3 class="cat__name">{{ c.name }}</h3>
+          <span class="cat__go"><app-icon name="arrow-right" [s]="15" /></span>
+        </div>
+        <p class="cat__blurb">{{ c.blurb }}</p>
+      </a>
+    }
+  </div>
+</section>
+
+<!-- 03 · featured products -->
+<section class="section band--warm feat">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <div>
+        <p class="eyebrow">Featured pieces</p>
+        <h2>Loved in homes, made by hand</h2>
+      </div>
+      <div class="chip-row" role="tablist" aria-label="Filter featured pieces">
+        @for (t of tabs; track t) {
+          <button type="button" class="chip" role="tab" [attr.aria-selected]="tab() === t" (click)="tab.set(t)">{{ t }}</button>
+        }
+      </div>
+    </div>
+    <div class="feat__grid">
+      @for (p of featured(); track p.slug; let i = $index) {
+        <app-product-card [product]="p" [index]="i" />
+      }
+    </div>
+    <div class="feat__more" appReveal>
+      <a routerLink="/products" class="btn btn--outline">View all products <app-icon class="arrow" name="arrow-right" [s]="16" /></a>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · story -->
+<section class="section story">
+  <div class="container story__grid">
+    <div class="story__imgs">
+      <div class="story__weave" appReveal revealFrom="left"><app-art [art]="storyWeave" alt="Close-up of hand-woven cane webbing" aspect="278 / 370" /></div>
+      <div class="story__badge" revealFrom="scale" [appReveal]="300"><span>Woven<br />by hand</span></div>
+      <div class="story__chair" appReveal revealFrom="right" [appReveal]="200"><app-art [art]="storyChair" alt="A finished carved cane-back armchair" aspect="210 / 262" /></div>
+    </div>
+    <div class="story__copy" appReveal>
+      <p class="eyebrow">Our story</p>
+      <h2>Cane has been woven this way for generations.</h2>
+      <p class="story__lead">We work with skilled artisans who split, soak and weave natural cane by hand, then turn it into furniture and decor that suits modern homes.</p>
+      <p class="story__p">Each piece begins as raw cane and ends with a finish chosen for its room. Traditional weaving patterns sit alongside simple, contemporary shapes, and every product can be adapted in size and colour.</p>
+      <ul class="story__trio">
+        <li><h3>Natural</h3><p>cane, rope, seasoned wood</p></li>
+        <li><h3>Handmade</h3><p>woven and finished by artisans</p></li>
+        <li><h3>Custom</h3><p>sizes and finishes on request</p></li>
+      </ul>
+      <a routerLink="/about" class="link-arrow">Read our story <app-icon name="arrow-right" [s]="14" /></a>
+    </div>
+  </div>
+</section>
+
+<!-- 05 · process -->
+<section class="section band--forest proc">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <div>
+        <p class="eyebrow">Inside the workshop</p>
+        <h2 class="proc__h">From raw cane to finished piece</h2>
+      </div>
+      <a routerLink="/craftsmanship" class="link-arrow">See the full process <app-icon name="arrow-right" [s]="14" /></a>
+    </div>
+    <ol class="proc__steps">
+      @for (s of process; track s.n; let i = $index) {
+        <li class="step" [appReveal]="i * 90">
+          <div class="step__top"><span class="step__n">{{ s.n }}</span><app-icon [name]="s.icon" [s]="20" /></div>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.text }}</p>
+        </li>
+      }
+    </ol>
+    <div class="proc__imgs">
+      @for (s of process.slice(0, 3); track s.n; let i = $index) {
+        <div class="proc__img" [appReveal]="i * 120" revealFrom="scale">
+          <app-art [art]="s.art!" [alt]="s.label" aspect="16 / 9" />
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- 06 · why us -->
+<section class="section why">
+  <div class="container">
+    <div class="section-head section-head--center" appReveal>
+      <p class="eyebrow eyebrow--center">Why choose us</p>
+      <h2>Considered materials, honest craft</h2>
+    </div>
+    <div class="why__grid">
+      @for (w of why; track w.title; let i = $index) {
+        <div class="why__item" [appReveal]="i * 80">
+          <span class="why__ico"><app-icon [name]="w.icon" [s]="22" /></span>
+          <h3>{{ w.title }}</h3>
+          <p>{{ w.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- 07 · installations -->
+<section class="section band--warm inst">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <div>
+        <p class="eyebrow">In real spaces</p>
+        <h2>Furniture and installations</h2>
+      </div>
+      <a routerLink="/gallery" class="link-arrow">View all projects <app-icon name="arrow-right" [s]="14" /></a>
+    </div>
+    <div class="inst__grid">
+      @for (it of installs; track it.label; let i = $index) {
+        <a class="inst__item" [class.is-big]="it.cls === 'big'" [routerLink]="it.link" [appReveal]="i * 90" revealFrom="scale">
+          <app-art [art]="it.art" [alt]="it.label" />
+          <span class="inst__tag">{{ it.label }}</span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- 08 · testimonials -->
+<section class="section testi">
+  <div class="container testi__grid">
+    <div appReveal>
+      <p class="eyebrow">Kind words</p>
+      <h2>What customers say<br />about their pieces</h2>
+      <p class="testi__note">Real customer reviews appear here once collected with permission. The cards beside are marked as sample content.</p>
+      <div class="testi__ctrl">
+        <button type="button" class="icon-btn" (click)="step(-1)" aria-label="Previous review"><app-icon name="chevron-left" [s]="18" /></button>
+        <button type="button" class="icon-btn icon-btn--solid" (click)="step(1)" aria-label="Next review"><app-icon name="chevron-right" [s]="18" /></button>
+      </div>
+    </div>
+    <div class="testi__card" appReveal revealFrom="right" aria-live="polite">
+      <span class="badge badge--outline testi__tag">Sample content</span>
+      @for (qq of [quote()]; track qq.quote) {
+        <div class="testi__swap" [class.is-prev]="dir() === 'prev'">
+          <span class="testi__mark" aria-hidden="true">“</span>
+          <blockquote>{{ qq.quote }}</blockquote>
+          <div class="testi__who">
+            <span class="avatar">{{ qq.initials }}</span>
+            <div><strong>{{ qq.name }}</strong><span>{{ qq.meta }}</span></div>
+            <span class="testi__stars" aria-label="Sample five star rating">
+              @for (s of stars; track s) { <app-icon name="star" [s]="14" /> }
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- 09 · custom and bulk -->
+<section class="section band--sand cust">
+  <div class="container">
+    <div class="section-head section-head--center" appReveal>
+      <p class="eyebrow eyebrow--center">Custom and bulk orders</p>
+      <h2>Made to your design, in the quantity you need</h2>
+      <p class="lead">Homes, cafes, resorts and boutiques can order furniture and decor in custom sizes, colours and quantities.</p>
+    </div>
+    <div class="cust__grid">
+      <article class="cust__card" [appReveal]="0">
+        <div class="cust__body">
+          <h3>Custom furniture</h3>
+          <ul class="rule-list">
+            <li><app-icon name="check" [s]="15" /> Choose size and shape</li>
+            <li><app-icon name="check" [s]="15" /> Pick finish and colour</li>
+            <li><app-icon name="check" [s]="15" /> Share a reference image</li>
+            <li><app-icon name="check" [s]="15" /> Get a quotation by message</li>
+          </ul>
+          <a routerLink="/custom-orders" class="link-arrow">Start a custom order <app-icon name="arrow-right" [s]="14" /></a>
+        </div>
+        <div class="cust__img"><app-art [art]="custChair" alt="Walnut cane-back armchair" /></div>
+      </article>
+      <article class="cust__card" [appReveal]="120">
+        <div class="cust__body">
+          <h3>Bulk and trade</h3>
+          <ul class="rule-list">
+            <li><app-icon name="check" [s]="15" /> Cafes, hotels and resorts</li>
+            <li><app-icon name="check" [s]="15" /> Retail and gifting orders</li>
+            <li><app-icon name="check" [s]="15" /> Repeat designs in batches</li>
+            <li><app-icon name="check" [s]="15" /> Timelines confirmed per order</li>
+          </ul>
+          <a routerLink="/contact" [queryParams]="{ type: 'Bulk or trade' }" class="link-arrow">Ask about bulk orders <app-icon name="arrow-right" [s]="14" /></a>
+        </div>
+        <div class="cust__img"><app-art [art]="custLamp" alt="Open rattan pendant lamp" /></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · inspiration -->
+<section class="section insp">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <div>
+        <p class="eyebrow">Inspiration</p>
+        <h2>Styled with cane, shared on social</h2>
+      </div>
+      <a href="#" class="link-arrow">Follow on Instagram <app-icon name="arrow-right" [s]="14" /></a>
+    </div>
+    <div class="insp__grid">
+      @for (s of social; track s.link; let i = $index) {
+        <a [routerLink]="s.link" class="insp__item" [appReveal]="i * 60" revealFrom="scale" aria-label="View this piece">
+          <app-art [art]="s.art" alt="" aspect="1 / 1" />
+          <span class="insp__ico"><app-icon name="arrow-right" [s]="26" /></span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- newsletter -->
+<section class="band--forest news">
+  <div class="container news__in" appReveal>
+    <div>
+      <p class="eyebrow">Journal letters</p>
+      <h2 class="news__h">Stories from the workshop, a few times a year.</h2>
+    </div>
+    <app-newsletter-form />
+  </div>
+</section>

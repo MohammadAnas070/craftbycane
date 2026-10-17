@@ -1,0 +1,52 @@
+@if (a(); as a) {
+  <header class="head">
+    <div class="container--narrow head__in">
+      <app-breadcrumb [items]="crumbs()" />
+      <p class="eyebrow head__eyebrow">{{ a.topic }}</p>
+      <h1>{{ a.title }}</h1>
+      <p class="meta">By {{ a.author }} · {{ a.minutes }} min read · {{ a.date }}</p>
+    </div>
+  </header>
+
+  <div class="container hero-img" appReveal revealFrom="scale">
+    <app-art [art]="a.art" [alt]="a.title" aspect="21 / 9" [eager]="true" />
+  </div>
+
+  <div class="container body">
+    <aside class="toc no-print">
+      <p class="toc__t">Contents</p>
+      <ol>
+        @for (s of a.sections; track s.id) {
+          <li><button type="button" [class.is-on]="active() === s.id" (click)="go(s.id)">{{ s.heading }}</button></li>
+        }
+      </ol>
+      <button type="button" class="share" (click)="share()"><app-icon [name]="copied() ? 'check' : 'share'" [s]="15" /> {{ copied() ? 'Link copied' : 'Share' }}</button>
+    </aside>
+
+    <article class="prose">
+      <p class="prose__lead">{{ a.excerpt }}</p>
+      @for (s of a.sections; track s.id) {
+        <section [id]="'sec-' + s.id" [attr.data-sec]="s.id" appReveal>
+          <h2>{{ s.heading }}</h2>
+          @for (p of s.paragraphs; track $index) { <p>{{ p }}</p> }
+          @if (s.quote) { <blockquote>“{{ s.quote }}”</blockquote> }
+        </section>
+      }
+      <p class="prose__end">Questions about a piece or a finish? <a routerLink="/contact">Get in touch</a>; we are happy to help.</p>
+    </article>
+  </div>
+
+  <section class="section band--warm keep">
+    <div class="container">
+      <h2 appReveal>Keep reading</h2>
+      <div class="keep__grid">
+        @for (r of related(); track r.slug; let i = $index) {
+          <a class="rd" [routerLink]="['/journal', r.slug]" [appReveal]="i * 90">
+            <span class="rd__img"><app-art [art]="r.art" [alt]="r.title" aspect="3 / 2" /></span>
+            <span class="rd__t">{{ r.title }}</span>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+}

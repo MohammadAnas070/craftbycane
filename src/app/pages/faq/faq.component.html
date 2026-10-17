@@ -1,0 +1,53 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="FAQ" heading="Everything people ask before saying yes" lead="Quick answers on customisation, materials, sizes, pricing, delivery and care. Policy answers are marked until the business confirms them.">
+  <label class="search">
+    <app-icon name="search" [s]="18" />
+    <input type="search" placeholder="Search the FAQ, try “size” or “care”" aria-label="Search the FAQ" [value]="query()" (input)="query.set($any($event.target).value)" />
+  </label>
+</app-page-hero>
+
+<section class="section--tight body">
+  <div class="container body__grid">
+    <aside class="cats" aria-label="FAQ categories">
+      <p class="eyebrow">Categories</p>
+      <ul>
+        @for (c of allCounts; track c.id) {
+          <li><button type="button" (click)="jump(c.id)"><span>{{ c.title }}</span><em>{{ c.n }}</em></button></li>
+        }
+      </ul>
+    </aside>
+
+    <div class="groups">
+      @for (g of groups(); track g.id) {
+        <section class="group" [id]="'faq-' + g.id">
+          <h2 class="group__h">{{ g.title }}</h2>
+          <ul class="acc">
+            @for (it of g.items; track it.id; let i = $index) {
+              <li class="item" [class.is-open]="open().has(it.id)" [class.is-policy]="it.policy" [appReveal]="i * 50">
+                <h3>
+                  <button type="button" class="item__q" (click)="toggle(it.id)" [attr.aria-expanded]="open().has(it.id)" [attr.aria-controls]="'a-' + it.id" [id]="'q-' + it.id">
+                    <span>{{ it.q }}</span>
+                    <span class="item__ico"><app-icon [name]="open().has(it.id) ? 'minus' : 'plus'" [s]="15" /></span>
+                  </button>
+                </h3>
+                <div class="item__a" [id]="'a-' + it.id" role="region" [attr.aria-labelledby]="'q-' + it.id">
+                  <div>
+                    @if (it.policy) { <span class="badge badge--outline">Policy to be confirmed</span> }
+                    <p>{{ it.a }}</p>
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      } @empty {
+        <div class="none">
+          <h3>No answers match “{{ query() }}”</h3>
+          <p class="muted">Try a broader word, or ask us directly.</p>
+          <a [href]="wa" target="_blank" rel="noopener" class="btn btn--outline">Ask on WhatsApp</a>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<app-cta-band heading="Still have a question?" text="Message us and we will help you choose." primaryLabel="Contact us" primaryLink="/contact" />

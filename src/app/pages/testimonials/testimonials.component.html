@@ -1,0 +1,66 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="Testimonials" heading="Kind words from customers" lead="Genuine feedback appears here once collected with permission. Everything below is sample layout content and is labelled as such.">
+  <div side class="hq" aria-hidden="true">
+    <span class="hq__mark">“</span>
+    <p>Short highlighted quote from a verified customer.</p>
+    <div class="hq__who"><span class="avatar">AB</span><div><strong>Customer name</strong><span>City</span></div></div>
+    <span class="badge badge--outline hq__tag">Sample content</span>
+  </div>
+</app-page-hero>
+
+<section class="section feat">
+  <div class="container feat__grid">
+    <div class="feat__img" appReveal revealFrom="left">
+      <app-art [art]="featImg" alt="A hanging cane chair, sample customer photo" aspect="4 / 4.6" />
+      <span class="feat__ph">Customer photo (with permission)</span>
+    </div>
+    <div appReveal>
+      <p class="eyebrow">Featured story</p>
+      <h2>A veranda swing, made to measure</h2>
+      <blockquote class="feat__q">“We wanted something that fits our veranda exactly. They shared a drawing, adjusted the size, and the finished swing looks beautiful.”</blockquote>
+      <div class="who"><span class="avatar">AB</span><div><strong>Customer name</strong><span>City · Custom Egg Swing</span></div><span class="badge badge--outline">Sample content</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section band--warm all">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <div><p class="eyebrow">All feedback</p><h2>What people say about their pieces</h2></div>
+      <div class="chip-row" role="tablist" aria-label="Filter feedback">
+        @for (k of kinds; track k) { <button type="button" class="chip" role="tab" [attr.aria-selected]="kind() === k" (click)="kind.set(k)">{{ k }}</button> }
+      </div>
+    </div>
+    <div class="grid">
+      @for (r of reviews(); track r.quote; let i = $index) {
+        <figure class="rev" [appReveal]="(i % 3) * 80">
+          <span class="badge badge--outline rev__tag">Sample content</span>
+          <span class="rev__stars" aria-label="Sample five star rating">@for (s of stars; track s) { <app-icon name="star" [s]="13" /> }</span>
+          <blockquote>{{ r.quote }}</blockquote>
+          <figcaption><span class="avatar">{{ r.initials }}</span><div><strong>Customer name</strong><span>City · Reviewed: {{ r.product }}</span></div></figcaption>
+        </figure>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section share">
+  <div class="container share__grid">
+    <div appReveal>
+      <p class="eyebrow">Bought something from us?</p>
+      <h2>Share your feedback</h2>
+      <p class="lead share__p">We only publish reviews with your permission. Share a few words and, if you like, a photo of the piece in your home.</p>
+    </div>
+    <div appReveal [appReveal]="100">
+      @if (prepared(); as r) {
+        <app-inquiry-result heading="Your feedback is ready to send" [text]="r.text" [whatsapp]="r.whatsapp" [mailto]="r.mailto" (edit)="result.set(null)" />
+      } @else {
+        <form class="form" [formGroup]="form" (ngSubmit)="send()" novalidate>
+          <div class="field"><label for="fb-name">Name</label><input id="fb-name" class="input" formControlName="name" placeholder="Your name" autocomplete="name" /><app-field-error [control]="form.controls.name" /></div>
+          <div class="field"><label for="fb-prod">Product <span class="opt">(optional)</span></label><input id="fb-prod" class="input" formControlName="product" placeholder="Which piece did you buy?" /></div>
+          <div class="field"><label for="fb-msg">Your feedback</label><textarea id="fb-msg" class="textarea" formControlName="feedback" placeholder="Tell us about your experience..."></textarea><app-field-error [control]="form.controls.feedback" /></div>
+          <div><button type="submit" class="btn" [disabled]="sending()">{{ sending() ? 'Preparing...' : 'Submit feedback' }}</button></div>
+        </form>
+      }
+    </div>
+  </div>
+</section>

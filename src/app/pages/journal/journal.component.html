@@ -1,0 +1,52 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="Journal" heading="Notes from the workshop" lead="Stories about craft, styling ideas, care guides and life at the workshop.">
+  <label class="search">
+    <app-icon name="search" [s]="18" />
+    <input type="search" placeholder="Search the journal" aria-label="Search the journal" [value]="query()" (input)="query.set($any($event.target).value)" />
+  </label>
+</app-page-hero>
+
+@if (showFeatured()) {
+  <section class="section--tight feat">
+    <div class="container feat__grid">
+      <a class="feat__img" [routerLink]="['/journal', featured.slug]" appReveal revealFrom="left"><app-art [art]="featured.art" [alt]="featured.title" aspect="4 / 3" [eager]="true" /></a>
+      <div appReveal>
+        <p class="eyebrow">Featured · {{ featured.topic }}</p>
+        <h2 class="feat__h"><a [routerLink]="['/journal', featured.slug]">{{ featured.title }}</a></h2>
+        <p class="lead feat__p">{{ featured.excerpt }}</p>
+        <p class="meta">{{ featured.author }} · {{ featured.minutes }} min read · {{ featured.date }}</p>
+        <a [routerLink]="['/journal', featured.slug]" class="link-arrow">Read the story <app-icon name="arrow-right" [s]="14" /></a>
+      </div>
+    </div>
+  </section>
+}
+
+<section class="section--tight grid-sec">
+  <div class="container">
+    <div class="chip-row chip-row--scroll" role="tablist" aria-label="Topics">
+      @for (t of topics; track t) { <button type="button" class="chip" role="tab" [attr.aria-selected]="topic() === t" (click)="topic.set(t); limit.set(6)">{{ t }}</button> }
+    </div>
+
+    <div class="grid">
+      @for (a of shown(); track a.slug; let i = $index) {
+        <article class="post" [appReveal]="(i % 3) * 80">
+          <a [routerLink]="['/journal', a.slug]" class="post__img"><app-art [art]="a.art" [alt]="a.title" aspect="4 / 3" /></a>
+          <p class="eyebrow post__topic">{{ a.topic }}</p>
+          <h3 class="post__h"><a [routerLink]="['/journal', a.slug]">{{ a.title }}</a></h3>
+          <p class="meta">{{ a.author }} · {{ a.minutes }} min read · {{ a.date }}</p>
+        </article>
+      } @empty {
+        <p class="none muted">No articles match your search. Try a different word or topic.</p>
+      }
+    </div>
+    @if (shown().length < filtered().length) {
+      <div class="more"><button type="button" class="btn btn--outline" (click)="limit.set(limit() + 6)">Load more articles</button></div>
+    }
+  </div>
+</section>
+
+<section class="band--forest news">
+  <div class="container news__in" appReveal>
+    <div><p class="eyebrow">Journal letters</p><h2 class="news__h">Stories from the workshop, a few times a year.</h2></div>
+    <app-newsletter-form />
+  </div>
+</section>

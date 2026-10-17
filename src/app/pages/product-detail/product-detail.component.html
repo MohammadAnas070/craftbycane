@@ -1,0 +1,195 @@
+@if (p(); as p) {
+  <section class="top">
+    <div class="container">
+      <app-breadcrumb [items]="crumbs()" />
+
+      <div class="top__grid">
+        <!-- gallery -->
+        <div class="gal">
+          <ul class="gal__thumbs" aria-label="Product photos">
+            @for (a of gallery(); track a; let i = $index) {
+              <li>
+                <button type="button" class="thumb" [class.is-on]="gi() === i" (click)="gi.set(i)" [attr.aria-label]="'Show photo ' + (i + 1)" [attr.aria-current]="gi() === i">
+                  <app-art [art]="a" alt="" aspect="1 / 1.12" />
+                </button>
+              </li>
+            }
+          </ul>
+          <div class="gal__main" (mousemove)="onZoom($event)" (mouseleave)="zoom.set({ on: false, x: 50, y: 50 })">
+            @for (k of [gi()]; track k) {
+              <div class="gal__img" [class.is-zoom]="zoom().on" [style.transform-origin]="zoom().x + '% ' + zoom().y + '%'">
+                <app-art [art]="gallery()[gi()]" [alt]="gi() === 0 ? p.name : p.name + ', photo ' + (gi() + 1)" aspect="4 / 5" [eager]="true" />
+              </div>
+            }
+            @if (p.badge) { <span class="gal__badge" [class.gal__badge--new]="p.badge === 'NEW'">{{ p.badge }}</span> }
+            <button type="button" class="gal__expand" (click)="lightbox.set(true)" aria-label="Open large view"><app-icon name="expand" [s]="17" /></button>
+            <span class="gal__count">Photo {{ gi() + 1 }} / {{ gallery().length }}</span>
+          </div>
+        </div>
+
+        <!-- buy box -->
+        <div class="buy">
+          <p class="eyebrow">{{ catName(p) }}</p>
+          <h1 class="buy__title">{{ p.name }}</h1>
+          <p class="buy__meta">
+            <span>Code <strong>{{ p.code }}</strong></span><span class="buy__sep"></span>
+            <span class="badge">Handmade</span>
+            @if (p.badge === 'MADE TO ORDER' || p.priceType !== 'fixed') { <span class="badge">Made to order</span> }
+          </p>
+
+          <div class="buy__price">
+            @switch (p.priceType) {
+              @case ('fixed') { <span class="buy__amt">{{ priceText() }}</span> }
+              @case ('from') { <span class="buy__pre">Starting at</span><span class="buy__amt">{{ priceText() }}</span> }
+              @default { <span class="buy__amt buy__amt--quote">Request a Quote</span> }
+            }
+          </div>
+          <p class="buy__note">
+            @if (p.priceType === 'quote') { Priced to your size, finish and quantity. }
+            @else { Sample price. Final price depends on size, finish and quantity. }
+            <button type="button" class="linkish" (click)="requestQuote()">Request a Quote for an exact figure.</button>
+          </p>
+          <p class="buy__desc">{{ p.desc }} Light to move, comfortable to use, and suited to living rooms, verandas and cafes.</p>
+
+          <div class="grp">
+            <p class="grp__label">Finish <span>{{ finish() }}</span></p>
+            <div class="swatches" role="radiogroup" aria-label="Finish">
+              @for (f of p.finishes; track f) {
+                <button type="button" role="radio" class="sw" [class.is-on]="finish() === f" [attr.aria-checked]="finish() === f" [attr.aria-label]="f" [style.background]="swatch[f]" (click)="finish.set(f)"></button>
+              }
+            </div>
+          </div>
+          <div class="grp">
+            <p class="grp__label">Size</p>
+            <div class="chip-row" role="radiogroup" aria-label="Size">
+              @for (s of sizes; track s) {
+                <button type="button" role="radio" class="chip" [attr.aria-checked]="size() === s" [class.is-active]="size() === s" (click)="size.set(s)">{{ s }}</button>
+              }
+            </div>
+          </div>
+          <div class="grp grp--row">
+            <div>
+              <p class="grp__label">Quantity</p>
+              <div class="qty">
+                <button type="button" (click)="bumpQty(-1)" aria-label="Decrease quantity"><app-icon name="minus" [s]="14" /></button>
+                <input type="number" min="1" max="99" [value]="qty()" (change)="onQty($event)" aria-label="Quantity" />
+                <button type="button" (click)="bumpQty(1)" aria-label="Increase quantity"><app-icon name="plus" [s]="14" /></button>
+              </div>
+            </div>
+            <div class="grp__grow">
+              <p class="grp__label">Customisation</p>
+              <input type="text" class="input" placeholder="Add a note (size, fabric, colour)" [value]="note()" (input)="note.set($any($event.target).value)" aria-label="Customisation note" maxlength="140" />
+            </div>
+          </div>
+
+          <div class="buy__btns">
+            <button type="button" class="btn" (click)="requestQuote()">Request a Quote</button>
+            <a class="btn btn--wa" [href]="waUrl()" target="_blank" rel="noopener"><app-icon name="whatsapp" [s]="17" /> WhatsApp inquiry</a>
+            <button type="button" class="heart" [class.is-on]="saved()" (click)="wishlist.toggle(p.slug)" [attr.aria-pressed]="saved()" [attr.aria-label]="saved() ? 'Remove from wishlist' : 'Save to wishlist'"><app-icon name="heart" [s]="19" /></button>
+          </div>
+
+          <div class="wa">
+            <p class="wa__lab">Prefilled WhatsApp message</p>
+            <p class="wa__bubble">{{ waMessage() }}</p>
+          </div>
+          <ul class="assure">
+            <li><app-icon name="clock" [s]="15" /> Timeline shared with quotation</li>
+            <li><app-icon name="shield" [s]="15" /> Care guide included</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band--warm details">
+    <div class="container details__grid">
+      <div appReveal>
+        <p class="eyebrow">Product details</p>
+        <h2>Made by hand, piece by piece</h2>
+        <p class="details__p">Each piece starts with a seasoned wood or rope frame. Artisans then weave the panel from natural cane in a classic open pattern, trim the edges and sand the frame by hand before it is finished and checked.</p>
+        <h3 class="details__care">Care and maintenance</h3>
+        <ul class="rule-list">
+          @for (c of care; track c) { <li><app-icon name="check" [s]="15" /> {{ c }}</li> }
+        </ul>
+      </div>
+      <dl class="spec" appReveal [appReveal]="120">
+        <div><dt>Product code</dt><dd>{{ p.code }} (placeholder)</dd></div>
+        <div><dt>Category</dt><dd>{{ catName(p) }}</dd></div>
+        <div><dt>Materials</dt><dd>{{ p.material }}{{ p.material === 'Cane and wood' ? ', seasoned wood frame' : '' }}</dd></div>
+        <div><dt>Dimensions</dt><dd>{{ dims() }}</dd></div>
+        <div><dt>Finishes</dt><dd>{{ p.finishes.join(', ') }}</dd></div>
+        <div><dt>Customisation</dt><dd>Size, finish, cushion fabric and colour</dd></div>
+        <div><dt>Production and delivery</dt><dd>Shared with your quotation</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section #inquiryEl id="inquiry" class="section inq">
+    <div class="container inq__grid">
+      <div appReveal>
+        <p class="eyebrow">Ask about this piece</p>
+        <h2>Need a different size or finish?</h2>
+        <p class="lead inq__lead">Send us your requirements. We reply with a quotation and answer questions about materials, size and timelines.</p>
+        <div class="about">
+          <app-art [art]="p.image" alt="" aspect="1 / 1" />
+          <div><span>About</span><strong>{{ p.name }} · {{ p.code }}</strong></div>
+        </div>
+      </div>
+
+      <div appReveal [appReveal]="100">
+        @if (prepared(); as r) {
+          <app-inquiry-result [text]="r.text" [whatsapp]="r.whatsapp" [mailto]="r.mailto" (edit)="result.set(null)" />
+        } @else {
+          <form class="form" [formGroup]="form" (ngSubmit)="send()" novalidate>
+            <div class="form__row">
+              <div class="field"><label for="pd-name">Name</label><input id="pd-name" class="input" formControlName="name" placeholder="Your name" autocomplete="name" /><app-field-error [control]="form.controls.name" /></div>
+              <div class="field"><label for="pd-phone">Phone <span class="opt">(optional)</span></label><input id="pd-phone" class="input" formControlName="phone" placeholder="Phone number" autocomplete="tel" inputmode="tel" /><app-field-error [control]="form.controls.phone" /></div>
+            </div>
+            <div class="field"><label for="pd-email">Email</label><input id="pd-email" class="input" type="email" formControlName="email" placeholder="Email address" autocomplete="email" /><app-field-error [control]="form.controls.email" /></div>
+            <div class="field"><label for="pd-msg">Message</label><textarea id="pd-msg" class="textarea" formControlName="message" placeholder="Size, finish, quantity, delivery location..."></textarea><app-field-error [control]="form.controls.message" /></div>
+            <div class="form__btns">
+              <button type="submit" class="btn" [disabled]="sending()">{{ sending() ? 'Preparing...' : 'Send inquiry' }}</button>
+              <a class="btn btn--wa" [href]="waUrl()" target="_blank" rel="noopener"><app-icon name="whatsapp" [s]="17" /> WhatsApp</a>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section band--warm rel">
+    <div class="container">
+      <div class="section-head" appReveal>
+        <div><p class="eyebrow">You may also like</p><h2>Related products</h2></div>
+        @if (cat(); as c) { <a [routerLink]="['/categories', c.slug]" class="link-arrow">View category <app-icon name="arrow-right" [s]="14" /></a> }
+      </div>
+      <div class="rel__grid">
+        @for (r of related(); track r.slug; let i = $index) { <app-product-card [product]="r" [index]="i" /> }
+      </div>
+
+      @if (recent().length) {
+        <div class="recent" appReveal>
+          <p class="eyebrow">Recently viewed</p>
+          <ul class="recent__list">
+            @for (r of recent(); track r.slug) {
+              <li>
+                <a [routerLink]="['/products', r.slug]" class="rv">
+                  <app-art [art]="r.image" [alt]="r.name" aspect="1 / 1" />
+                  <span><strong>{{ r.name }}</strong><em>{{ r.price ? ('₹ ' + r.price.toLocaleString('en-IN')) : 'Request a Quote' }}</em></span>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </section>
+
+  <app-lightbox [items]="lbItems()" [(open)]="lightbox" [(index)]="gi" />
+
+  <!-- mobile sticky action bar -->
+  <div class="sticky no-print">
+    <button type="button" class="btn" (click)="requestQuote()">Request a Quote</button>
+    <a class="btn btn--wa" [href]="waUrl()" target="_blank" rel="noopener"><app-icon name="whatsapp" [s]="17" /> WhatsApp</a>
+  </div>
+}

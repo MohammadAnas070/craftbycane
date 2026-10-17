@@ -1,0 +1,74 @@
+<section class="hero" (mouseenter)="hold(true)" (mouseleave)="hold(false)" (focusin)="hold(true)" (focusout)="hold(false)" aria-roledescription="carousel" aria-label="Featured pieces">
+  <!-- tinted wash that follows the active slide -->
+  <div class="hero__wash hero__wash--0"></div>
+  <div class="hero__wash hero__wash--1"></div>
+  <div class="hero__wash hero__wash--2"></div>
+  <div class="hero__floor" aria-hidden="true"></div>
+
+  <div class="container hero__in">
+    <div class="hero__copy">
+      <p class="eyebrow hero__eyebrow">Handcrafted cane furniture and decor</p>
+      <h1 class="hero__title">
+        <span class="line l1">Crafted by Nature.</span>
+        <span class="line l2"><em>Shaped by Tradition.</em></span>
+      </h1>
+      <p class="hero__lead">Hand-woven cane furniture, lamps, swings and home pieces, made by skilled artisans from natural materials and finished to fit your space.</p>
+      <div class="hero__cta">
+        <a routerLink="/products" class="btn">Explore our collection <app-icon class="arrow" name="arrow-right" [s]="16" /></a>
+        <a routerLink="/custom-orders" class="btn btn--outline">Custom orders</a>
+      </div>
+      <ul class="hero__facts">
+        <li><app-icon name="leaf" [s]="16" /> Natural cane and rope</li>
+        <li><app-icon name="hand" [s]="16" /> Woven by hand</li>
+        <li><app-icon name="ruler" [s]="16" /> Made to your size</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stage" aria-live="off">
+    <!-- slide 1: the veranda scene, built from layers -->
+    <div class="slide slide--room" [class.is-active]="active() === 0" [attr.aria-hidden]="active() !== 0">
+      <div class="p p--back">
+        <div class="arch"></div>
+        <div class="beam"></div>
+      </div>
+      <div class="p p--lamp2"><div class="sway sway--b"><img src="assets/images/hero-lamp.webp" alt="" width="496" height="560" decoding="async" /></div></div>
+      <div class="p p--lamp"><div class="sway"><img src="assets/images/hero-lamp.webp" alt="Woven dome pendant lamp" width="496" height="560" decoding="async" fetchpriority="high" /></div></div>
+      <div class="p p--swing">
+        <div class="swing-shadow"></div>
+        <div class="sway sway--swing"><img src="assets/images/hero-swing.webp" alt="Hanging egg swing chair in a woven cane shell" width="740" height="1340" decoding="async" fetchpriority="high" /></div>
+      </div>
+      <div class="p p--rug"></div>
+      <div class="p p--basket"><div class="bob"><img src="assets/images/hero-basket.webp" alt="Woven basket with a leafy plant" width="840" height="500" decoding="async" /></div></div>
+      <div class="p p--table"><div class="bob bob--b"><img src="assets/images/hero-table.webp" alt="Cane side table with a potted plant" width="408" height="504" decoding="async" /></div></div>
+      <span class="mote m1"></span><span class="mote m2"></span><span class="mote m3"></span><span class="mote m4"></span><span class="mote m5"></span>
+    </div>
+
+    <!-- slides 2 and 3: arched product windows (real product photos, background removed) -->
+    @for (s of slides.slice(1); track s.key; let i = $index) {
+      <div class="slide slide--win" [class.is-active]="active() === i + 1" [attr.aria-hidden]="active() !== i + 1">
+        <div class="p p--win">
+          <div class="window" [class]="'window tone-' + s.tone">
+            <app-art [art]="s.art" [alt]="s.label" />
+          </div>
+        </div>
+        <span class="mote m2"></span><span class="mote m4"></span><span class="mote m5"></span>
+      </div>
+    }
+  </div>
+
+  <div class="hero__ctrl container">
+    <a class="hero__caption" [routerLink]="slides[active()].link" [attr.aria-label]="'View ' + slides[active()].label">
+      <span class="hero__count">0{{ active() + 1 }} / 0{{ slides.length }}</span>
+      <span class="hero__name">{{ slides[active()].label }}</span>
+      <app-icon name="arrow-right" [s]="14" />
+    </a>
+    <div class="dots" role="tablist" aria-label="Choose slide">
+      @for (s of slides; track s.key; let i = $index) {
+        <button type="button" role="tab" class="dot" [class.is-on]="active() === i" [attr.aria-selected]="active() === i" [attr.aria-label]="'Show ' + s.label" (click)="go(i)">
+          <span class="dot__fill" [style.animation-duration.ms]="interval"></span>
+        </button>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="Contact us" heading="Let’s talk about your space" lead="Questions, quotes or a custom idea. Message us on WhatsApp for the fastest reply, or use the form." />
+
+<section class="section--tight main">
+  <div class="container main__grid">
+    <div class="card">
+      @if (prepared(); as r) {
+        <app-inquiry-result heading="Your message is ready" [text]="r.text" [whatsapp]="r.whatsapp" [mailto]="r.mailto" (edit)="result.set(null)" />
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="send()" novalidate class="form">
+          <p class="eyebrow">Send a message</p>
+          <h2 class="form__h">We would love to hear from you</h2>
+
+          <fieldset class="fs">
+            <legend class="field__label">Inquiry type</legend>
+            <div class="chip-row" role="radiogroup" aria-label="Inquiry type">
+              @for (k of kinds; track k) {
+                <button type="button" role="radio" class="chip" [attr.aria-checked]="form.controls.kind.value === k" [class.is-active]="form.controls.kind.value === k" (click)="setKind(k)">{{ k }}</button>
+              }
+            </div>
+          </fieldset>
+
+          <div class="row">
+            <div class="field"><label for="ct-name">Name</label><input id="ct-name" class="input" formControlName="name" placeholder="Your name" autocomplete="name" /><app-field-error [control]="form.controls.name" /></div>
+            <div class="field"><label for="ct-phone">Phone <span class="opt">(optional)</span></label><input id="ct-phone" class="input" formControlName="phone" placeholder="Phone number" autocomplete="tel" inputmode="tel" /><app-field-error [control]="form.controls.phone" /></div>
+          </div>
+          <div class="field"><label for="ct-email">Email</label><input id="ct-email" class="input" type="email" formControlName="email" placeholder="Email address" autocomplete="email" /><app-field-error [control]="form.controls.email" /></div>
+          <div class="field"><label for="ct-msg">Message</label><textarea id="ct-msg" class="textarea" formControlName="message" placeholder="How can we help?"></textarea><app-field-error [control]="form.controls.message" /></div>
+          <div>
+            <label class="check"><input type="checkbox" formControlName="consent" /> I agree to be contacted about this inquiry.</label>
+            <app-field-error [control]="form.controls.consent" [messages]="{ required: 'Please tick the box so we can contact you.' }" />
+          </div>
+          <div class="btns">
+            <button type="submit" class="btn" [disabled]="sending()">{{ sending() ? 'Preparing...' : 'Send message' }}</button>
+            <a class="btn btn--wa" [href]="wa" target="_blank" rel="noopener"><app-icon name="whatsapp" [s]="17" /> WhatsApp</a>
+          </div>
+        </form>
+      }
+    </div>
+
+    <aside class="info" appReveal revealFrom="right">
+      <ul class="info__list">
+        <li><span class="info__ico"><app-icon name="phone" [s]="18" /></span><div><span class="info__k">Phone</span>
+          @if (c.telHref(); as t) { <a [href]="t">{{ c.phone() }}</a> } @else { <span class="info__v">{{ c.phone() }}</span> }</div></li>
+        <li><span class="info__ico"><app-icon name="whatsapp" [s]="18" /></span><div><span class="info__k">WhatsApp</span><a [href]="wa" target="_blank" rel="noopener">{{ c.whatsapp() }}</a></div></li>
+        <li><span class="info__ico"><app-icon name="mail" [s]="18" /></span><div><span class="info__k">Email</span>
+          @if (c.mailHref(); as m) { <a [href]="m">{{ c.email() }}</a> } @else { <span class="info__v">{{ c.email() }}</span> }</div></li>
+        <li><span class="info__ico"><app-icon name="pin" [s]="18" /></span><div><span class="info__k">Workshop or showroom</span><span class="info__v">{{ c.address() }}</span></div></li>
+        <li><span class="info__ico"><app-icon name="clock" [s]="18" /></span><div><span class="info__k">Hours</span><span class="info__v">{{ c.hours() }}</span></div></li>
+      </ul>
+      <div class="info__follow">
+        <span class="info__k">Follow</span>
+        <div class="social">
+          <a [href]="site.social.instagram" aria-label="Instagram"><app-icon name="instagram" [s]="17" /></a>
+          <a [href]="site.social.facebook" aria-label="Facebook"><app-icon name="facebook" [s]="17" /></a>
+          <a [href]="site.social.youtube" aria-label="YouTube"><app-icon name="youtube" [s]="17" /></a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="section band--warm visit">
+  <div class="container visit__grid">
+    <div appReveal>
+      <p class="eyebrow">Visit the workshop</p>
+      <h2>Come and see the weaving</h2>
+      <p class="lead visit__p">{{ c.address() }}. Add visiting hours and a short note on appointments here once they are confirmed.</p>
+      <a [href]="directions" target="_blank" rel="noopener" class="link-arrow">Get directions <app-icon name="arrow-right" [s]="14" /></a>
+    </div>
+    <div class="map">
+      <div #map class="map__canvas" role="region" aria-label="Map showing our location in Anjali, Ahmedabad"></div>
+    </div>
+  </div>
+</section>

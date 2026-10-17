@@ -1,0 +1,33 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="Gallery and projects" heading="Cane in real rooms" lead="Furniture installations, decorative handicrafts, lamps and custom projects. Tap any image to see it larger.">
+  <div side class="trio" aria-hidden="true">
+    @for (t of heroTiles; track t; let i = $index) { <div [class]="'trio__' + i"><app-art [art]="t" alt="" /></div> }
+  </div>
+</app-page-hero>
+
+<section class="section--tight gal">
+  <div class="container">
+    <div class="chip-row chip-row--scroll" role="tablist" aria-label="Gallery categories">
+      @for (c of cats; track c) {
+        <button type="button" class="chip" role="tab" [attr.aria-selected]="cat() === c" (click)="pick(c)">{{ c }}</button>
+      }
+    </div>
+
+    <div class="masonry">
+      @for (g of shown(); track g.id; let i = $index) {
+        <button type="button" class="tile" [class]="'tile tile--' + g.ratio" [appReveal]="(i % 3) * 80" (click)="openAt(g)" [attr.aria-label]="'Open ' + g.title + ' larger'">
+          <app-art [art]="g.art" [alt]="g.title + ', ' + g.space" />
+          <span class="tile__cap">{{ g.label }}</span>
+          <span class="tile__hover"><app-icon name="expand" [s]="22" /></span>
+        </button>
+      }
+    </div>
+
+    @if (shown().length < filtered().length) {
+      <div class="more"><button type="button" class="btn btn--outline" (click)="more()">Load more projects</button></div>
+    }
+  </div>
+</section>
+
+<app-cta-band heading="Planning a space?" text="Share your room and we can suggest pieces and sizes." />
+
+<app-lightbox [items]="lbItems()" [(open)]="open" [(index)]="idx" />

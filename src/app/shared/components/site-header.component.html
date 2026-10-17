@@ -1,0 +1,107 @@
+@if (ui.announcementOpen()) {
+  <div class="announce">
+    <p>
+      {{ site.announcement }}
+      <a [href]="wa" target="_blank" rel="noopener">Message us on WhatsApp</a>
+    </p>
+    <button type="button" class="announce__close" (click)="ui.announcementOpen.set(false)" aria-label="Dismiss announcement">
+      <app-icon name="close" [s]="14" />
+    </button>
+  </div>
+}
+
+<header class="header" [class.is-scrolled]="scrolled()">
+  <div class="container header__bar">
+    <app-logo />
+
+    <nav class="nav" aria-label="Primary">
+      <ul>
+        @for (l of links.slice(0, 2); track l.path) {
+          <li>
+            <a [routerLink]="l.path" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: l.exact }" class="nav__link">{{ l.label }}</a>
+          </li>
+        }
+        <li class="nav__has-menu" [class.is-suppressed]="menuSuppressed()" (mouseenter)="releaseMenu()" (focusin)="releaseMenu()">
+          <a routerLink="/products" routerLinkActive="is-active" class="nav__link" aria-haspopup="true">
+            Products <app-icon name="chevron-down" [s]="13" />
+          </a>
+          <div class="mega" role="region" aria-label="Product categories">
+            <div class="mega__grid">
+              @for (c of categories; track c.slug) {
+                <a class="mega__item" [routerLink]="['/categories', c.slug]">
+                  <app-art class="mega__thumb" [art]="c.art" [alt]="c.name" aspect="4 / 3" />
+                  <span class="mega__name">{{ c.name }}</span>
+                  <span class="mega__blurb">{{ c.blurb }}</span>
+                </a>
+              }
+              <div class="mega__cta">
+                <span class="eyebrow">Custom orders</span>
+                <p class="mega__cta-title">Designed to your space, woven by hand.</p>
+                <a routerLink="/custom-orders" class="link-arrow">Start a custom order <app-icon class="arrow" name="arrow-right" [s]="14" /></a>
+              </div>
+            </div>
+          </div>
+        </li>
+        @for (l of links.slice(2); track l.path) {
+          <li>
+            <a [routerLink]="l.path" routerLinkActive="is-active" class="nav__link">{{ l.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <button type="button" class="act" (click)="ui.openSearch()" aria-label="Search">
+        <app-icon name="search" [s]="19" />
+      </button>
+      <a routerLink="/wishlist" class="act act--heart" [attr.aria-label]="'Wishlist, ' + wishlist.count() + ' saved'">
+        <app-icon name="heart" [s]="19" />
+        @if (wishlist.count() > 0) { <span class="act__count">{{ wishlist.count() }}</span> }
+      </a>
+      <a routerLink="/custom-orders" class="btn btn--terra btn--sm quote">Request a Quote</a>
+      <button type="button" class="act burger" (click)="ui.openDrawer()" aria-label="Open menu" aria-haspopup="dialog">
+        <app-icon name="menu" [s]="22" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<app-search-overlay />
+
+<!-- mobile drawer -->
+<div class="drawer-wrap" [class.is-open]="ui.drawerOpen()" [attr.aria-hidden]="!ui.drawerOpen()">
+  <div class="drawer-scrim" (click)="ui.closeDrawer()"></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-label="Menu" [attr.inert]="ui.drawerOpen() ? null : ''">
+    <div class="drawer__top">
+      <app-logo />
+      <button type="button" class="act" (click)="ui.closeDrawer()" aria-label="Close menu"><app-icon name="close" [s]="22" /></button>
+    </div>
+    <nav class="drawer__nav" aria-label="Mobile">
+      <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/about" routerLinkActive="is-active">About</a>
+      <div class="drawer__acc">
+        <button type="button" (click)="mobileProducts.set(!mobileProducts())" [attr.aria-expanded]="mobileProducts()">
+          Products <app-icon name="chevron-down" [s]="18" [class.is-open]="mobileProducts()" />
+        </button>
+        <div class="drawer__sub" [class.is-open]="mobileProducts()">
+          <div>
+            <a routerLink="/products">All products</a>
+            @for (c of categories; track c.slug) {
+              <a [routerLink]="['/categories', c.slug]">{{ c.name }}</a>
+            }
+          </div>
+        </div>
+      </div>
+      <a routerLink="/craftsmanship" routerLinkActive="is-active">Craftsmanship</a>
+      <a routerLink="/gallery" routerLinkActive="is-active">Gallery</a>
+      <a routerLink="/journal" routerLinkActive="is-active">Journal</a>
+      <a routerLink="/contact" routerLinkActive="is-active">Contact</a>
+      <a routerLink="/wishlist" routerLinkActive="is-active">Wishlist @if (wishlist.count() > 0) { <span class="drawer__n">{{ wishlist.count() }}</span> }</a>
+    </nav>
+    <div class="drawer__cta">
+      <a routerLink="/custom-orders" class="btn btn--terra btn--block">Request a Quote</a>
+      <a [href]="wa" target="_blank" rel="noopener" class="btn btn--wa btn--block"><app-icon name="whatsapp" [s]="17" /> WhatsApp</a>
+      <a routerLink="/contact" class="btn btn--outline btn--block"><app-icon name="phone" [s]="16" /> Call us</a>
+    </div>
+  </aside>
+</div>

@@ -1,0 +1,24 @@
+:host { display: block; }
+.footer { background: var(--charcoal); color: rgba(248, 245, 239, 0.82); padding-block: clamp(56px, 7vw, 88px) 28px; font-size: 14px; }
+.footer__grid { display: grid; grid-template-columns: 1fr; gap: 40px; padding-bottom: 56px; }
+@media (min-width: 640px) { .footer__grid { grid-template-columns: repeat(2, 1fr); } .footer__brand { grid-column: 1 / -1; } }
+@media (min-width: 1100px) { .footer__grid { grid-template-columns: 1.25fr 1.1fr 0.9fr 0.9fr 1.15fr; gap: 32px; } .footer__brand { grid-column: auto; } }
+
+.footer__brand p { margin-top: 22px; max-width: 30ch; line-height: 1.7; color: rgba(248, 245, 239, 0.8); }
+.social { display: flex; gap: 10px; margin-top: 22px; }
+.social a { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid rgba(248, 245, 239, 0.25); border-radius: 50%; transition: background-color 0.25s, color 0.25s, border-color 0.25s, transform 0.25s var(--ease); }
+.social a:hover { background: var(--ivory); color: var(--charcoal); border-color: var(--ivory); transform: translateY(-3px); }
+
+.footer__h { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #d9ae78; margin-bottom: 22px; }
+.footer ul li + li { margin-top: 12px; }
+.footer nav a { display: inline-block; line-height: 1.45; transition: color 0.2s, transform 0.25s var(--ease); }
+.footer nav a:hover { color: var(--ivory); transform: translateX(3px); }
+.footer__small { margin-bottom: 16px; line-height: 1.6; max-width: 30ch; }
+
+.footer__contact { margin-top: 22px; }
+.footer__contact li { display: flex; align-items: center; gap: 12px; }
+.footer__contact a:hover { color: var(--ivory); text-decoration: underline; }
+
+.footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; padding-top: 26px; border-top: 1px solid rgba(248, 245, 239, 0.14); font-size: 13px; color: rgba(248, 245, 239, 0.6); }
+.footer__legal { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+.footer__legal a:hover { color: var(--ivory); }

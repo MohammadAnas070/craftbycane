@@ -1,0 +1,56 @@
+<section class="hero">
+  <div class="hero__bg" aria-hidden="true"><app-art [art]="heroBg" alt="" [eager]="true" /></div>
+  <div class="hero__shade" aria-hidden="true"></div>
+  <div class="container hero__in">
+    <app-breadcrumb [items]="crumbs" class="hero__bc" />
+    <p class="eyebrow hero__eyebrow">Our craftsmanship</p>
+    <h1>Slow hands, careful weaves</h1>
+    <p class="lead hero__lead">Follow a piece from raw cane to finished furniture, step by step.</p>
+  </div>
+</section>
+
+<div class="prog no-print" aria-label="Process steps">
+  <div class="container prog__in">
+    <div class="prog__bar"><span [style.transform]="'scaleX(' + progress() + ')'"></span></div>
+    <ol class="prog__list">
+      @for (s of steps; track s.n; let i = $index) {
+        <li>
+          <button type="button" [class.is-on]="active() === i" [class.is-done]="active() > i" (click)="jump(i)" [attr.aria-current]="active() === i ? 'step' : null">
+            <span class="prog__n">{{ s.n }}</span><span class="prog__t">{{ s.title }}</span>
+          </button>
+        </li>
+      }
+    </ol>
+  </div>
+</div>
+
+<section class="section steps">
+  <div class="container">
+    @for (s of steps; track s.n; let i = $index) {
+      <article class="step" [class.step--flip]="i % 2 === 1" [attr.data-step]="i" [attr.id]="'step-' + s.n">
+        <div class="step__img" appReveal revealFrom="scale">
+          <app-art [art]="s.art" [alt]="'Step ' + s.n + ': ' + s.title" aspect="5 / 4" />
+        </div>
+        <div class="step__copy" [appReveal]="120">
+          <span class="step__n">{{ s.n }}</span>
+          <h2>{{ s.title }}</h2>
+          <p>{{ s.text }}</p>
+        </div>
+      </article>
+    }
+  </div>
+</section>
+
+<section class="section--tight band--warm qa">
+  <div class="container qa__grid">
+    @for (c of checks; track c.title; let i = $index) {
+      <div class="qa__item" [appReveal]="i * 90">
+        <span class="qa__ico"><app-icon [name]="c.icon" [s]="20" /></span>
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.text }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<app-cta-band heading="Want to see your design made?" text="Start a custom order and we will share a sample plan before we build." />

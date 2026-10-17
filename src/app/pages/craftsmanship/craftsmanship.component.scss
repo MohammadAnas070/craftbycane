@@ -1,0 +1,48 @@
+:host { display: block; }
+
+.hero { position: relative; overflow: hidden; isolation: isolate; background: var(--forest); color: var(--ivory); min-height: clamp(340px, 30vw, 440px); display: flex; align-items: center; }
+.hero__bg { position: absolute; inset: -4%; z-index: -2; opacity: 0.32; mix-blend-mode: luminosity; }
+.hero__bg app-art { position: absolute; inset: 0; }
+.hero__bg app-art ::ng-deep img { animation: pan 26s ease-in-out infinite alternate; transform: scale(1.35); }
+@keyframes pan { to { transform: scale(1.35) translate(-5%, 3%); } }
+.hero__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(41, 70, 56, 0.96) 0%, rgba(41, 70, 56, 0.72) 55%, rgba(120, 140, 126, 0.55) 100%); }
+.hero__in { padding-block: 48px 64px; }
+.hero__bc { display: block; margin-bottom: 34px; }
+.hero ::ng-deep .bc ol, .hero ::ng-deep .bc a { color: rgba(248, 245, 239, 0.8); }
+.hero ::ng-deep .bc li:last-child span { color: var(--ivory); }
+.hero .eyebrow { color: var(--cane); animation: fade-in 0.7s var(--ease) both; }
+.hero h1 { margin-top: 18px; color: var(--ivory); font-size: clamp(44px, 5.8vw, 76px); max-width: 12ch; animation: fade-up 0.9s var(--ease) 0.1s both; }
+.hero__lead { margin-top: 22px; color: rgba(248, 245, 239, 0.86); animation: fade-up 0.9s var(--ease) 0.25s both; }
+
+/* sticky progress */
+.prog { position: sticky; top: var(--header-h); z-index: 40; background: rgba(248, 245, 239, 0.94); backdrop-filter: saturate(1.2); border-bottom: 1px solid var(--line); }
+.prog__in { position: relative; }
+.prog__bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; }
+.prog__bar span { display: block; height: 100%; background: var(--terracotta); transform-origin: left; transition: transform 0.2s linear; }
+.prog__list { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
+.prog__list li { flex: 1 0 auto; }
+.prog__list button { display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 16px 10px; font-size: 12.5px; color: var(--ink-muted); white-space: nowrap; border-top: 2px solid transparent; transition: color 0.25s, border-color 0.25s; }
+.prog__list button:hover { color: var(--forest); }
+.prog__list button.is-on { color: var(--forest); font-weight: 600; border-color: var(--terracotta); }
+.prog__list button.is-done { color: var(--forest); }
+.prog__n { font-size: 10.5px; letter-spacing: 0.1em; color: var(--cane-dark); }
+@media (max-width: 720px) { .prog__t { display: none; } .prog__list button.is-on .prog__t { display: inline; } .prog__list li { flex: 1 1 auto; } }
+
+/* steps */
+.steps { padding-block: clamp(56px, 6vw, 88px); }
+.step { display: grid; gap: 28px; align-items: center; padding-block: clamp(28px, 4vw, 56px); }
+@media (min-width: 900px) { .step { grid-template-columns: 1fr 1fr; gap: 88px; } .step--flip .step__img { order: 2; } }
+.step__img { overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.step__img app-art ::ng-deep img { transition: transform 1.4s var(--ease), opacity 0.5s; }
+.step:hover .step__img app-art ::ng-deep img { transform: scale(1.05); }
+.step__n { display: block; font-family: var(--font-serif); font-size: 72px; line-height: 1; color: var(--cane); }
+.step__copy h2 { margin-top: 18px; font-size: clamp(34px, 3.6vw, 48px); }
+.step__copy p { margin-top: 16px; max-width: 40ch; font-size: 16.5px; line-height: 1.75; }
+
+/* quality */
+.qa__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px 24px; }
+@media (min-width: 900px) { .qa__grid { grid-template-columns: repeat(4, 1fr); } }
+.qa__ico { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid var(--cane); border-radius: 50%; color: var(--cane-dark); transition: background-color 0.3s, color 0.3s; }
+.qa__item:hover .qa__ico { background: var(--forest); color: var(--ivory); border-color: var(--forest); }
+.qa__item h3 { margin-top: 18px; font-size: 24px; }
+.qa__item p { margin-top: 6px; font-size: 13.5px; color: var(--ink-muted); }

@@ -1,0 +1,99 @@
+@if (cat(); as c) {
+  <section class="hero" [class]="'hero tone-' + c.tone" [class.is-dark]="dark()">
+    <div class="hero__art" aria-hidden="true">
+      @for (k of [c.slug]; track k) { <app-art [art]="c.art" [alt]="''" [eager]="true" /> }
+    </div>
+    <div class="container hero__in">
+      <app-breadcrumb [items]="crumbs()" class="hero__bc" />
+      <p class="eyebrow hero__eyebrow">{{ c.id }}</p>
+      <h1 class="hero__title">{{ c.name }}</h1>
+      <p class="hero__tag">{{ c.heroTitle }}</p>
+      <p class="lead hero__lead">{{ c.heroCopy }}</p>
+      <div class="hero__cta">
+        <a href="#shop" class="btn" [class.btn--white]="dark()">Shop {{ c.short }}</a>
+        <a routerLink="/custom-orders" class="btn" [class.btn--outline]="!dark()" [class.btn--outline-light]="dark()">Custom order</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight about">
+    <div class="container about__grid">
+      <div appReveal>
+        <p class="eyebrow">{{ c.about.kicker }}</p>
+        <h2>{{ c.about.title }}</h2>
+        <p class="lead about__p1">{{ c.about.p1 }}</p>
+        <p class="about__p2">{{ c.about.p2 }}</p>
+      </div>
+      <ul class="points">
+        @for (pt of c.about.points; track pt.title; let i = $index) {
+          <li [appReveal]="i * 90">
+            <span class="points__ico"><app-icon [name]="pt.icon" [s]="18" /></span>
+            <strong>{{ pt.title }}</strong>
+            <span>{{ pt.text }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="shop" class="section--tight band--warm shop">
+    <div class="container">
+      <div class="shop__top">
+        <div class="chip-row chip-row--scroll" role="tablist" [attr.aria-label]="'Types of ' + c.short">
+          <button type="button" class="chip" role="tab" [attr.aria-selected]="!type()" (click)="type.set('')">All {{ c.short.toLowerCase() }}</button>
+          @for (t of typeChips(); track t) {
+            <button type="button" class="chip" role="tab" [attr.aria-selected]="type() === t" (click)="type.set(t)">{{ t }}</button>
+          }
+        </div>
+        <div class="shop__sort">
+          <span class="muted">{{ results().length }} sample products</span>
+          <select class="select" (change)="onSort($event)" aria-label="Sort products">
+            @for (s of sorts; track s.value) { <option [value]="s.value" [selected]="sort() === s.value">Sort: {{ s.label }}</option> }
+          </select>
+          <button type="button" class="btn btn--outline shop__fbtn" (click)="drawer.set(true)"><app-icon name="filter" [s]="16" /> Filters</button>
+        </div>
+      </div>
+
+      <div class="shop__grid">
+        <aside class="shop__side">
+          <p class="eyebrow">Filter</p>
+          <app-filter-panel [pool]="pool()" [types]="c.types" [showSearch]="true" [(query)]="query" [(state)]="filters" />
+        </aside>
+        <div>
+          <app-product-grid [items]="results()" [cols]="3" [step]="6" moreLabel="Load more" (reset)="reset()" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section related">
+    <div class="container">
+      <div class="section-head" appReveal>
+        <div>
+          <p class="eyebrow">Keep exploring</p>
+          <h2>Related categories</h2>
+        </div>
+      </div>
+      <div class="related__grid">
+        @for (r of related(); track r.slug; let i = $index) {
+          <a class="rel" [routerLink]="['/categories', r.slug]" [appReveal]="i * 90">
+            <div class="rel__img"><app-art [art]="r.art" [alt]="r.name" aspect="4 / 3" /></div>
+            <h3>{{ r.name }}</h3>
+            <p class="muted">{{ r.blurb }}</p>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <app-cta-band [heading]="'Need a different size or colour?'" [text]="'Every ' + c.short.toLowerCase() + ' piece can be adapted. Tell us what you have in mind.'" />
+
+  <div class="dw" [class.is-open]="drawer()">
+    <div class="dw__scrim" (click)="drawer.set(false)"></div>
+    <aside class="dw__panel" role="dialog" aria-modal="true" aria-label="Filters" [attr.inert]="drawer() ? null : ''">
+      <div class="dw__top"><h2>Filters</h2><button type="button" class="icon-btn" (click)="drawer.set(false)" aria-label="Close filters"><app-icon name="close" [s]="18" /></button></div>
+      <div class="dw__body"><app-filter-panel [pool]="pool()" [types]="c.types" [showSearch]="true" [(query)]="query" [(state)]="filters" /></div>
+      <div class="dw__foot"><button type="button" class="btn btn--block" (click)="drawer.set(false)">Show {{ results().length }} pieces</button></div>
+    </aside>
+  </div>
+}

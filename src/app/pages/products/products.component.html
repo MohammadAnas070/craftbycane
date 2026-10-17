@@ -1,0 +1,61 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="The collection" heading="All products" lead="Browse every handwoven piece. Filter by category, search by name, or ask for a quote on anything that needs a custom size.">
+  <div side class="mosaic" aria-hidden="true">
+    <div class="mosaic__a"><app-art [art]="mosaic[0]" alt="" aspect="1 / 1.1" /></div>
+    <div class="mosaic__b"><app-art [art]="mosaic[2]" alt="" aspect="4 / 5" /></div>
+    <div class="mosaic__c"><app-art [art]="mosaic[1]" alt="" aspect="1 / 1.25" /></div>
+  </div>
+</app-page-hero>
+
+<section class="section--tight cat">
+  <div class="container">
+    <div class="chip-row chip-row--scroll" role="tablist" aria-label="Categories">
+      <button type="button" class="chip" role="tab" [attr.aria-selected]="cat() === 'all'" (click)="setCat('all')">All</button>
+      @for (c of categories; track c.slug) {
+        <button type="button" class="chip" role="tab" [attr.aria-selected]="cat() === c.slug" (click)="setCat(c.slug)">{{ c.short }}</button>
+      }
+    </div>
+
+    <div class="bar">
+      <label class="bar__search">
+        <app-icon name="search" [s]="17" />
+        <input type="search" class="bar__input" placeholder="Search by product name" aria-label="Search by product name" [value]="query()" (input)="query.set($any($event.target).value)" />
+      </label>
+      <label class="bar__sort">
+        <span>Sort by</span>
+        <select class="select bar__select" (change)="onSort($event)" aria-label="Sort products">
+          @for (s of sorts; track s.value) { <option [value]="s.value" [selected]="sort() === s.value">{{ s.label }}</option> }
+        </select>
+      </label>
+      <button type="button" class="btn btn--outline bar__filters" (click)="drawer.set(true)" aria-haspopup="dialog">
+        <app-icon name="filter" [s]="16" /> Filters
+        @if (activeFilters()) { <span class="dot"></span> }
+      </button>
+    </div>
+
+    <p class="count" aria-live="polite">
+      <strong>{{ results().length }}</strong> sample {{ results().length === 1 ? 'product' : 'products' }}
+      @if (activeFilters() || query() || cat() !== 'all') { <button type="button" class="count__reset" (click)="resetAll()">Reset filters</button> }
+    </p>
+
+    <app-product-grid [items]="results()" [loading]="loading()" (reset)="resetAll()" />
+  </div>
+</section>
+
+<app-cta-band />
+
+<!-- filters drawer -->
+<div class="dw" [class.is-open]="drawer()">
+  <div class="dw__scrim" (click)="drawer.set(false)"></div>
+  <aside class="dw__panel" role="dialog" aria-modal="true" aria-label="Filters" [attr.inert]="drawer() ? null : ''">
+    <div class="dw__top">
+      <h2>Filters</h2>
+      <button type="button" class="icon-btn" (click)="drawer.set(false)" aria-label="Close filters"><app-icon name="close" [s]="18" /></button>
+    </div>
+    <div class="dw__body">
+      <app-filter-panel [pool]="pool()" [(state)]="filters" />
+    </div>
+    <div class="dw__foot">
+      <button type="button" class="btn btn--block" (click)="drawer.set(false)">Show {{ results().length }} pieces</button>
+    </div>
+  </aside>
+</div>

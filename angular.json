@@ -27,25 +27,36 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
+              "src/favicon.svg",
               "src/assets"
             ],
             "styles": [
+              "node_modules/@fontsource/cormorant-garamond/latin-400.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-500.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-600.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-400-italic.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-500-italic.css",
+              "node_modules/@fontsource-variable/inter/wght.css",
+              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "leaflet"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "900kb",
+                  "maximumError": "1.5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "14kb",
+                  "maximumError": "24kb"
                 }
               ],
               "outputHashing": "all"
@@ -87,9 +98,17 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
+              "src/favicon.svg",
               "src/assets"
             ],
             "styles": [
+              "node_modules/@fontsource/cormorant-garamond/latin-400.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-500.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-600.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-400-italic.css",
+              "node_modules/@fontsource/cormorant-garamond/latin-500-italic.css",
+              "node_modules/@fontsource-variable/inter/wght.css",
+              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -97,5 +116,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "c7dd48bd-2c74-4615-b331-a6f29d06042a"
   }
 }

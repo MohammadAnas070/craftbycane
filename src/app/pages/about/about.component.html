@@ -1,0 +1,107 @@
+<app-page-hero [crumbs]="crumbs" eyebrow="About us" heading="A craft passed from hand to hand" lead="We are a team of weavers and makers turning natural cane into furniture and decor that feels at home in modern spaces.">
+  <div side class="mosaic" aria-hidden="true">
+    <div class="mosaic__a"><app-art [art]="weave" alt="" aspect="1 / 1" /></div>
+    <div class="mosaic__b"><app-art [art]="mosaicChair" alt="" aspect="1 / 1" /></div>
+    <div class="mosaic__c"><app-art [art]="mosaicLamp" alt="" aspect="1 / 1" /></div>
+  </div>
+</app-page-hero>
+
+<section class="section story">
+  <div class="container story__grid">
+    <div appReveal>
+      <p class="eyebrow">Our story</p>
+      <h2>Rooted in tradition, drawn for today</h2>
+      <p class="story__p">Tell the real story here: where the workshop is, who started it, and why this craft matters to your family and community.</p>
+      <p class="story__p muted">This layout supports a long-form story with a timeline. Use the business’s own history, dates and photographs once supplied.</p>
+    </div>
+    <ol class="tl">
+      @for (t of timeline; track t.title; let i = $index) {
+        <li class="tl__item" [appReveal]="i * 120">
+          <span class="tl__dot"></span>
+          <p class="tl__year">{{ t.year }}</p>
+          <h3>{{ t.title }}</h3>
+          <p>{{ t.text }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<section class="band--forest quote">
+  <div class="container quote__in" appReveal>
+    <p class="eyebrow eyebrow--center">Craftsmanship philosophy</p>
+    <blockquote>“A good chair should be as honest as the cane it is woven from.”</blockquote>
+    <p class="quote__by">Pull-quote from the founder or head artisan (placeholder).</p>
+  </div>
+</section>
+
+<section class="section trad">
+  <div class="container trad__grid">
+    <div class="trad__img" appReveal revealFrom="left"><app-art [art]="weave" alt="Traditional hand-woven cane pattern" aspect="5 / 4" /></div>
+    <div appReveal>
+      <p class="eyebrow">Tradition meets modern design</p>
+      <h2>Classic patterns, simpler shapes</h2>
+      <p class="trad__p">We keep time-tested weaves like the open octagon and herringbone, then set them in clean, contemporary frames.</p>
+      <ul class="rule-list">
+        <li><app-icon name="check" [s]="15" /> Traditional weaving techniques passed down by artisans</li>
+        <li><app-icon name="check" [s]="15" /> Modern proportions and neutral colours</li>
+        <li><app-icon name="check" [s]="15" /> Pieces designed for small flats and large verandas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section band--warm mat">
+  <div class="container">
+    <div class="section-head section-head--center" appReveal>
+      <p class="eyebrow eyebrow--center">Materials and process</p>
+      <h2>What goes into every piece</h2>
+    </div>
+    <div class="mat__grid">
+      @for (m of materials; track m.title; let i = $index) {
+        <article class="mat__card" [appReveal]="i * 100">
+          <span class="mat__ico"><app-icon [name]="m.icon" [s]="20" /></span>
+          <h3>{{ m.title }}</h3>
+          <p>{{ m.text }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section mv">
+  <div class="container mv__grid">
+    <div appReveal><p class="eyebrow">Mission</p><p class="mv__t">To keep a living craft alive by making beautiful, usable things.</p></div>
+    <div appReveal [appReveal]="120"><p class="eyebrow">Vision</p><p class="mv__t">Handwoven cane in every home that values natural materials.</p></div>
+  </div>
+</section>
+
+<section class="section band--forest vals">
+  <div class="container vals__grid">
+    @for (v of values; track v.n; let i = $index) {
+      <div class="val" [appReveal]="i * 100">
+        <span class="val__n">{{ v.n }}</span>
+        <h3>{{ v.title }}</h3>
+        <p>{{ v.text }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="section art">
+  <div class="container">
+    <div class="section-head" appReveal>
+      <div><p class="eyebrow">The people behind the weave</p><h2>Meet our artisans</h2></div>
+    </div>
+    <div class="art__grid">
+      @for (a of artisans; track a.pos; let i = $index) {
+        <figure class="person" [appReveal]="i * 90">
+          <div class="person__img"><app-art [art]="a.art" alt="Cane weaving and workshop detail" aspect="3 / 4" /></div>
+          <figcaption><strong>Artisan name</strong><span>Role and years of experience, supplied by the business</span></figcaption>
+        </figure>
+      }
+    </div>
+  </div>
+</section>
+
+<app-cta-band heading="See what our hands have made." text="Browse the full collection or ask us about a custom piece." primaryLabel="Custom order" />
