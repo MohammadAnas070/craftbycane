@@ -1,14 +1,26 @@
-<app-page-hero [crumbs]="crumbs" eyebrow="Contact us" heading="Let’s talk about your space" lead="Questions, quotes or a custom idea. Message us on WhatsApp for the fastest reply, or use the form." />
+<app-page-hero [crumbs]="crumbs" eyebrow="Contact us" heading="Let’s talk about your space" lead="Questions, quotes or a custom idea. Send us a message and we will reply by email, or chat on WhatsApp for the fastest reply." />
 
 <section class="section--tight main">
   <div class="container main__grid">
     <div class="card">
-      @if (prepared(); as r) {
-        <app-inquiry-result heading="Your message is ready" [text]="r.text" [whatsapp]="r.whatsapp" [mailto]="r.mailto" (edit)="result.set(null)" />
+      @if (status() === 'sent') {
+        <div class="done" role="status">
+          <p class="eyebrow">Message sent</p>
+          <h2 class="form__h">Thank you, we have your message</h2>
+          <p class="done__p">Your inquiry has been delivered to our team. We usually reply within one working day. For anything urgent, message us on WhatsApp.</p>
+          <div class="btns">
+            <a class="btn btn--wa" [href]="wa" target="_blank" rel="noopener"><app-icon name="whatsapp" [s]="17" /> Chat on WhatsApp</a>
+            <button type="button" class="btn btn--ghost" (click)="reset()">Write another message</button>
+          </div>
+        </div>
       } @else {
         <form [formGroup]="form" (ngSubmit)="send()" novalidate class="form">
           <p class="eyebrow">Send a message</p>
           <h2 class="form__h">We would love to hear from you</h2>
+
+          @if (errorMsg(); as err) {
+            <div class="alert alert--error" role="alert">{{ err }}</div>
+          }
 
           <fieldset class="fs">
             <legend class="field__label">Inquiry type</legend>
@@ -20,18 +32,23 @@
           </fieldset>
 
           <div class="row">
-            <div class="field"><label for="ct-name">Name</label><input id="ct-name" class="input" formControlName="name" placeholder="Your name" autocomplete="name" /><app-field-error [control]="form.controls.name" /></div>
-            <div class="field"><label for="ct-phone">Phone <span class="opt">(optional)</span></label><input id="ct-phone" class="input" formControlName="phone" placeholder="Phone number" autocomplete="tel" inputmode="tel" /><app-field-error [control]="form.controls.phone" /></div>
+            <div class="field"><label for="ct-name">Name</label><input id="ct-name" class="input" formControlName="name" placeholder="Your name" autocomplete="name" maxlength="100" /><app-field-error [control]="form.controls.name" /></div>
+            <div class="field"><label for="ct-phone">Phone <span class="opt">(optional)</span></label><input id="ct-phone" class="input" formControlName="phone" placeholder="Phone number" autocomplete="tel" inputmode="tel" maxlength="20" /><app-field-error [control]="form.controls.phone" /></div>
           </div>
-          <div class="field"><label for="ct-email">Email</label><input id="ct-email" class="input" type="email" formControlName="email" placeholder="Email address" autocomplete="email" /><app-field-error [control]="form.controls.email" /></div>
-          <div class="field"><label for="ct-msg">Message</label><textarea id="ct-msg" class="textarea" formControlName="message" placeholder="How can we help?"></textarea><app-field-error [control]="form.controls.message" /></div>
+          <div class="field"><label for="ct-email">Email</label><input id="ct-email" class="input" type="email" formControlName="email" placeholder="Email address" autocomplete="email" maxlength="254" /><app-field-error [control]="form.controls.email" /></div>
+          <div class="field"><label for="ct-subject">Subject</label><input id="ct-subject" class="input" formControlName="subject" placeholder="What is this about?" maxlength="150" /><app-field-error [control]="form.controls.subject" /></div>
+          <div class="field"><label for="ct-msg">Message</label><textarea id="ct-msg" class="textarea" formControlName="message" placeholder="How can we help?" maxlength="5000"></textarea><app-field-error [control]="form.controls.message" /></div>
+
+
           <div>
             <label class="check"><input type="checkbox" formControlName="consent" /> I agree to be contacted about this inquiry.</label>
             <app-field-error [control]="form.controls.consent" [messages]="{ required: 'Please tick the box so we can contact you.' }" />
           </div>
           <div class="btns">
-            <button type="submit" class="btn" [disabled]="sending()">{{ sending() ? 'Preparing...' : 'Send message' }}</button>
-            <a class="btn btn--wa" [href]="wa" target="_blank" rel="noopener"><app-icon name="whatsapp" [s]="17" /> WhatsApp</a>
+            <button type="submit" class="btn" [disabled]="status() === 'sending'" [attr.aria-busy]="status() === 'sending'">
+              {{ status() === 'sending' ? 'Sending…' : 'Send message' }}
+            </button>
+            <button type="button" class="btn btn--wa" (click)="openWhatsApp()"><app-icon name="whatsapp" [s]="17" /> Send on WhatsApp</button>
           </div>
         </form>
       }
@@ -39,13 +56,11 @@
 
     <aside class="info" appReveal revealFrom="right">
       <ul class="info__list">
-        <li><span class="info__ico"><app-icon name="phone" [s]="18" /></span><div><span class="info__k">Phone</span>
-          @if (c.telHref(); as t) { <a [href]="t">{{ c.phone() }}</a> } @else { <span class="info__v">{{ c.phone() }}</span> }</div></li>
-        <li><span class="info__ico"><app-icon name="whatsapp" [s]="18" /></span><div><span class="info__k">WhatsApp</span><a [href]="wa" target="_blank" rel="noopener">{{ c.whatsapp() }}</a></div></li>
-        <li><span class="info__ico"><app-icon name="mail" [s]="18" /></span><div><span class="info__k">Email</span>
-          @if (c.mailHref(); as m) { <a [href]="m">{{ c.email() }}</a> } @else { <span class="info__v">{{ c.email() }}</span> }</div></li>
-        <li><span class="info__ico"><app-icon name="pin" [s]="18" /></span><div><span class="info__k">Workshop or showroom</span><span class="info__v">{{ c.address() }}</span></div></li>
-        <li><span class="info__ico"><app-icon name="clock" [s]="18" /></span><div><span class="info__k">Hours</span><span class="info__v">{{ c.hours() }}</span></div></li>
+        <li><span class="info__ico"><app-icon name="phone" [s]="18" /></span><div><span class="info__k">Phone</span><a [href]="info.phoneHref">{{ info.phoneDisplay }}</a></div></li>
+        <li><span class="info__ico"><app-icon name="whatsapp" [s]="18" /></span><div><span class="info__k">WhatsApp</span><a [href]="wa" target="_blank" rel="noopener">{{ info.phoneDisplay }}</a></div></li>
+        <li><span class="info__ico"><app-icon name="mail" [s]="18" /></span><div><span class="info__k">Email</span><a [href]="'mailto:' + info.email">{{ info.email }}</a></div></li>
+        <li><span class="info__ico"><app-icon name="pin" [s]="18" /></span><div><span class="info__k">Workshop or showroom</span><span class="info__v">{{ info.address }}</span></div></li>
+        <li><span class="info__ico"><app-icon name="clock" [s]="18" /></span><div><span class="info__k">Hours</span><span class="info__v info__hours"><span class="info__hours-main">{{ info.hoursMain }}</span><br><span class="info__hours-sun">{{ info.hoursNote }}</span></span></div></li>
       </ul>
       <div class="info__follow">
         <span class="info__k">Follow</span>
@@ -64,7 +79,7 @@
     <div appReveal>
       <p class="eyebrow">Visit the workshop</p>
       <h2>Come and see the weaving</h2>
-      <p class="lead visit__p">{{ c.address() }}. Add visiting hours and a short note on appointments here once they are confirmed.</p>
+      <p class="lead visit__p">{{ info.address }}. <span class="visit__hours"><strong>Open {{ info.hoursMain }}</strong><br>{{ info.hoursNote }}</span></p>
       <a [href]="directions" target="_blank" rel="noopener" class="link-arrow">Get directions <app-icon name="arrow-right" [s]="14" /></a>
     </div>
     <div class="map">
